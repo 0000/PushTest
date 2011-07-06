@@ -1,0 +1,147 @@
+<?xml version="1.0" encoding="utf-8"?>
+<mx:Application xmlns:mx="http://www.adobe.com/2006/mxml" layout="vertical" creationComplete="init()">
+	
+	<mx:Script>
+		<![CDATA[
+			import mx.controls.sliderClasses.Slider;
+			import mx.events.SliderEvent;
+			
+			private function init():void{
+				ta.addEventListener(KeyboardEvent.KEY_DOWN,keyDnHandle);
+				ti.addEventListener(KeyboardEvent.KEY_DOWN,keyDnHandle);
+				ta.addEventListener(TextEvent.TEXT_INPUT,inputHandle);
+				ti.addEventListener(TextEvent.TEXT_INPUT,inputHandle);
+				
+				myTa.addEventListener(KeyboardEvent.KEY_DOWN,keyDnHandle);
+				myTi.addEventListener(KeyboardEvent.KEY_DOWN,keyDnHandle);
+				
+				myTa.addEventListener(TextEvent.TEXT_INPUT,inputHandle2);
+				myTi.addEventListener(TextEvent.TEXT_INPUT,inputHandle2);
+				
+			}
+			
+			private function keyDnHandle(e:KeyboardEvent):void{
+				var strTa:String="[TextArea KeyDown Event] : ";
+				var strTi:String="[TextInput KeyDown Event] : ";
+				 
+				if(e.currentTarget.id == "ta" || e.currentTarget.id == "myTa")
+					mon.text +=strTa+e.toString()+"\n\n";
+				if(e.currentTarget.id == "ti" || e.currentTarget.id == "myTi")
+					mon.text +=strTi+e.toString()+"\n\n";
+				
+			}
+			
+			private function inputHandle(e:TextEvent):void{
+				var strTa:String="[TextArea TextInput Event] : ";
+				var strTi:String="[TextInput TextInput Event] : ";
+				 
+				if(e.currentTarget.id == "ta")
+					mon2.text +=strTa+e.toString()+"\n\n";
+				if(e.currentTarget.id == "ti")
+					mon2.text +=strTi+e.toString()+"\n\n";
+			}
+			
+			private var intervalTime:Number=100;
+			
+			private function changeHandle(e:SliderEvent):void{
+				
+                intervalTime = parseInt(e.currentTarget.value);
+			}
+			
+			public var start:Number;
+			public var end:Number;
+			
+			public var startChar:String;
+			public var endChar:String;
+			
+			private function inputHandle2(e:TextEvent):void{
+				
+				var strTa:String="[TextArea TextInput Event] : ";
+				var strTi:String="[TextInput TextInput Event] : ";
+				 
+				if(e.currentTarget.id == "myTa")
+					mon2.text +=strTa+e.toString()+"\n\n";
+				if(e.currentTarget.id == "myTi")
+					mon2.text +=strTi+e.toString()+"\n\n";
+				
+				
+				var len:int = e.currentTarget.text.length;
+				start = getTimer();
+				startChar = e.text;
+					if(start - end < intervalTime)
+					{
+						if(startChar == endChar)
+						{
+							e.preventDefault();
+						}
+					}
+				end = start;
+				endChar = startChar;
+			}  
+		]]>
+	</mx:Script>
+	 
+	
+	<mx:Panel title="Event TEST" width="800" fontSize="12">
+		<mx:Form >
+			<mx:FormItem label="TextArea Event TEST">
+				<mx:TextArea height="80" width="500" id="ta"/>
+				<mx:Button label="clear" click="ta.text=''"/>	
+			</mx:FormItem>
+		</mx:Form>
+		<mx:Form>
+			<mx:FormItem label="TextInput Event TEST">
+				<mx:TextInput width="500" id="ti"/>
+				<mx:Button label="clear" click="ti.text=''"/>		
+			</mx:FormItem>
+		</mx:Form>
+	</mx:Panel>
+	
+	<mx:Panel title="Event Monitor" width="800" fontSize="12">
+		<mx:Form>
+			<mx:FormItem label="KeyDown Event Monitor">
+				<mx:TextArea id="mon"  height="130"  valueCommit="mon.verticalScrollPosition = mon.maxVerticalScrollPosition"  width="532"/>
+				<mx:Button label="Log clear" click="mon.text=''"/>
+			</mx:FormItem>
+		</mx:Form>
+		<mx:Form>
+			<mx:FormItem label="TextInput Event Monitor">
+				<mx:TextArea id="mon2"  height="130"  valueCommit="mon2.verticalScrollPosition = mon2.maxVerticalScrollPosition"  width="532"/>
+				<mx:Button  label="Log clear" click="mon2.text=''"/>
+			</mx:FormItem>
+		</mx:Form>
+	</mx:Panel>
+	
+	<mx:Panel title="연속입력 방지 테스트" width="800" fontSize="12">
+		<mx:Form >
+			<mx:FormItem label="TextArea TEST">
+				<mx:TextArea  height="80" width="500" id="myTa"/>
+				<mx:Button label="clear" click="myTa.text=''"/>	
+			</mx:FormItem>
+		</mx:Form>
+		<mx:Form>
+			<mx:FormItem label="TextInput TEST">
+				<mx:TextInput  width="500" id="myTi" />
+				<mx:Button label="clear" click="myTi.text=''"/>
+			</mx:FormItem>
+		</mx:Form>
+		<mx:Form>
+			<mx:FormItem label="연속입력 시간 설정">
+				<mx:HBox>
+					<mx:HSlider id="hs" liveDragging="true" 
+								value="100"
+								maximum="1000" 
+								minimum="0" 
+								labels="['Min','Max']" 
+								snapInterval="50" 
+								tickInterval="50"
+							    change="changeHandle(event)"/>
+					<mx:Label text="설정시간:{hs.value}ms" />	
+				</mx:HBox>
+					
+			</mx:FormItem>
+			
+		</mx:Form>
+	</mx:Panel>
+	
+</mx:Application>
